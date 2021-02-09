@@ -1,14 +1,12 @@
 import { stripIndent } from "common-tags";
 
-interface ParsebrdCoreArgument {
-    text: string
-}
-
-export default class ParsebrdCore {
+export default abstract class ParsebrdCore<ArgumentType> {
     public readonly originalText: string;
-    public readonly originalArguments: ParsebrdCoreArgument[];
+    public readonly originalArguments: ArgumentType[];
 
-    private readonly currentArguments: ParsebrdCoreArgument[];
+    private readonly currentArguments: ArgumentType[];
+
+    protected abstract parseArgument(text: string): ArgumentType;
 
     constructor(text: string, options?: { prefix?: string }) {
         this.originalText = text;
@@ -19,6 +17,29 @@ export default class ParsebrdCore {
 
         this.originalArguments = this.textToArguments(text);
         this.currentArguments = Array.from(this.originalArguments);
+    }
+
+    public get argumentsRemaining(): number {
+        return this.currentArguments.length;
+    }
+
+    public get hasNextArgument(): boolean {
+        if (this.argumentsRemaining > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public nextArgument(): ArgumentType {
+        if (!this.hasNextArgument) {
+            throw new Error("Parsebrd attempted to get the next argument from an array of none.");
+        }
+
+        const nextArgument = this.currentArguments.shift() as ArgumentType;
+
+        return nextArgument;
     }
 
     private removePrefix(text: string, prefix: string): string {
@@ -64,36 +85,13 @@ export default class ParsebrdCore {
         }
     }
 
-    private stringArrayToArguments(elements: string[]): ParsebrdCoreArgument[] {
-        return elements.map(text => { return { text: text } });
+    private stringArrayToArguments(elements: string[]): ArgumentType[] {
+        return elements.map(this.parseArgument);
     }
 
-    private textToArguments(text: string): ParsebrdCoreArgument[] {
+    private textToArguments(text: string): ArgumentType[] {
         const textArguments = this.splitByQuotesAndSpaces(text);
 
         return this.stringArrayToArguments(textArguments);
-    }
-
-    public get argumentsRemaining(): number {
-        return this.currentArguments.length;
-    }
-
-    public get hasNextArgument(): boolean {
-        if (this.argumentsRemaining > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    public nextArgument(): ParsebrdCoreArgument {
-        if (!this.hasNextArgument) {
-            throw new Error("Parsebrd attempted to get the next argument from an array of none.");
-        }
-
-        const nextArgument = this.currentArguments.shift() as ParsebrdCoreArgument;
-
-        return nextArgument;
     }
 }

@@ -1,8 +1,8 @@
-import ParsebrdCore from "../../src/parsebrd-core";
+import ParsebrdSimple from "../../src/parsebrd-simple";
 
 describe("parsebrd initialization", () => {
     it("should properly split normal text", () => {
-        const parsebrd = new ParsebrdCore("some command text");
+        const parsebrd = new ParsebrdSimple("some command text");
 
         expect(parsebrd.originalText).toBe("some command text");
         expect(parsebrd.originalArguments.length).toBe(3);
@@ -13,7 +13,7 @@ describe("parsebrd initialization", () => {
     });
 
     it("should properly split quoted text", () => {
-        let parsebrd = new ParsebrdCore(`"extremely quoted" text with "lots" of "" abnormalities" and words "!`);
+        let parsebrd = new ParsebrdSimple(`"extremely quoted" text with "lots" of "" abnormalities" and words "!`);
         expect(parsebrd.originalArguments.length).toBe(9);
         expect(parsebrd.originalArguments[0].text).toBe("extremely quoted");
         expect(parsebrd.originalArguments[1].text).toBe("text");
@@ -25,7 +25,7 @@ describe("parsebrd initialization", () => {
         expect(parsebrd.originalArguments[7].text).toBe("and words");
         expect(parsebrd.originalArguments[8].text).toBe("!");
 
-        parsebrd = new ParsebrdCore(`this one "starts without quoted text" but "ends with some"`);
+        parsebrd = new ParsebrdSimple(`this one "starts without quoted text" but "ends with some"`);
         expect(parsebrd.originalArguments.length).toBe(5);
         expect(parsebrd.originalArguments[0].text).toBe("this");
         expect(parsebrd.originalArguments[1].text).toBe("one");
@@ -33,42 +33,42 @@ describe("parsebrd initialization", () => {
         expect(parsebrd.originalArguments[3].text).toBe("but");
         expect(parsebrd.originalArguments[4].text).toBe("ends with some");
 
-        parsebrd = new ParsebrdCore(`"just one big quote argument"`);
+        parsebrd = new ParsebrdSimple(`"just one big quote argument"`);
         expect(parsebrd.originalArguments.length).toBe(1);
         expect(parsebrd.originalArguments[0].text).toBe("just one big quote argument");
 
-        parsebrd = new ParsebrdCore(`just one "quote in a weird spot`);
+        parsebrd = new ParsebrdSimple(`just one "quote in a weird spot`);
         expect(parsebrd.originalArguments.length).toBe(3);
         expect(parsebrd.originalArguments[0].text).toBe("just");
         expect(parsebrd.originalArguments[1].text).toBe("one");
         expect(parsebrd.originalArguments[2].text).toBe("quote in a weird spot");
 
-        parsebrd = new ParsebrdCore(`"at the beginning`);
+        parsebrd = new ParsebrdSimple(`"at the beginning`);
         expect(parsebrd.originalArguments.length).toBe(1);
         expect(parsebrd.originalArguments[0].text).toBe("at the beginning");
 
-        parsebrd = new ParsebrdCore("");
+        parsebrd = new ParsebrdSimple("");
         expect(parsebrd.originalArguments.length).toBe(0);
 
-        parsebrd = new ParsebrdCore(`""`);
+        parsebrd = new ParsebrdSimple(`""`);
         expect(parsebrd.originalArguments.length).toBe(1);
         expect(parsebrd.originalArguments[0].text).toBe("");
     });
 
     it("should properly remove prefixes", () => {
-        let parsebrd = new ParsebrdCore("b/hello, beasiary command!", { prefix: "b/" });
+        let parsebrd = new ParsebrdSimple("b/hello, beasiary command!", { prefix: "b/" });
         expect(parsebrd.originalArguments[0].text.startsWith("b/")).toBe(false);
 
         expect(() => {
-            new ParsebrdCore("hello, not a command!", { prefix: "b/" });
+            new ParsebrdSimple("hello, not a command!", { prefix: "b/" });
         }).toThrow();
 
-        parsebrd = new ParsebrdCore(" command with prefix of a space", { prefix: " "});
+        parsebrd = new ParsebrdSimple(" command with prefix of a space", { prefix: " "});
         expect(parsebrd.originalArguments[0].text.startsWith(" ")).toBe(false);
     });
 
     it("should properly iterate arguments", () => {
-        const parsebrd = new ParsebrdCore("a few arguments");
+        const parsebrd = new ParsebrdSimple("a few arguments");
 
         expect(parsebrd.argumentsRemaining).toBe(3);
         expect(parsebrd.hasNextArgument).toBe(true);
