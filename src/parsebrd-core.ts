@@ -1,14 +1,14 @@
 import { stripIndent } from "common-tags";
 
-interface ParsebrdArgument {
+interface ParsebrdCoreArgument {
     text: string
 }
 
-export default class Parsebrd {
+export default class ParsebrdCore {
     public readonly originalText: string;
-    public readonly originalArguments: ParsebrdArgument[];
+    public readonly originalArguments: ParsebrdCoreArgument[];
 
-    private readonly currentArguments: ParsebrdArgument[];
+    private readonly currentArguments: ParsebrdCoreArgument[];
 
     constructor(text: string, options?: { prefix?: string }) {
         this.originalText = text;
@@ -64,11 +64,11 @@ export default class Parsebrd {
         }
     }
 
-    private stringArrayToArguments(elements: string[]): ParsebrdArgument[] {
+    private stringArrayToArguments(elements: string[]): ParsebrdCoreArgument[] {
         return elements.map(text => { return { text: text } });
     }
 
-    private textToArguments(text: string): ParsebrdArgument[] {
+    private textToArguments(text: string): ParsebrdCoreArgument[] {
         const textArguments = this.splitByQuotesAndSpaces(text);
 
         return this.stringArrayToArguments(textArguments);
@@ -87,12 +87,12 @@ export default class Parsebrd {
         }
     }
 
-    public nextArgument(): ParsebrdArgument {
+    public nextArgument(): ParsebrdCoreArgument {
         if (!this.hasNextArgument) {
             throw new Error("Parsebrd attempted to get the next argument from an array of none.");
         }
 
-        const nextArgument = this.currentArguments.shift() as ParsebrdArgument;
+        const nextArgument = this.currentArguments.shift() as ParsebrdCoreArgument;
 
         return nextArgument;
     }
