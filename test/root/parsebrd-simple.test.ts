@@ -1,6 +1,6 @@
-import ParsebrdSimple from "../../src/parsebrd-simple";
+import ParsebrdSimple from "../../src/concrete/parsebrd-simple";
 
-describe("parsebrd initialization", () => {
+describe("ParsebrdSimple text parsing", () => {
     it("should properly split normal text", () => {
         const parsebrd = new ParsebrdSimple("some command text");
 
@@ -54,7 +54,9 @@ describe("parsebrd initialization", () => {
         expect(parsebrd.originalArguments.length).toBe(1);
         expect(parsebrd.originalArguments[0].text).toBe("");
     });
+});
 
+describe("ParsebrdSimple prefix treatment", () => {
     it("should properly remove prefixes", () => {
         let parsebrd = new ParsebrdSimple("b/hello, beasiary command!", { prefix: "b/" });
         expect(parsebrd.originalArguments[0].text.startsWith("b/")).toBe(false);
@@ -66,7 +68,9 @@ describe("parsebrd initialization", () => {
         parsebrd = new ParsebrdSimple(" command with prefix of a space", { prefix: " "});
         expect(parsebrd.originalArguments[0].text.startsWith(" ")).toBe(false);
     });
+});
 
+describe("ParsebrdSimple iteration behavior", () => {
     it("should properly iterate arguments", () => {
         const parsebrd = new ParsebrdSimple("a few arguments");
 

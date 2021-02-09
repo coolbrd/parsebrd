@@ -1,4 +1,4 @@
-import ParsebrdCore from "./parsebrd-core";
+import ParsebrdCore from "../parsebrd-core";
 
 interface ParsebrdSimpleArgument {
     text: string
