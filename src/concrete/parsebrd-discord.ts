@@ -10,7 +10,7 @@ interface ParsebrdDiscordArgument {
 }
 
 export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgument> {
-    protected parseArgument(text: string): ParsebrdDiscordArgument {
+    private extractUserId(text: string): string | undefined {
         const pingMatch = text.match(/<@!?\d{18}?>/);
         const pureIdMatch = text.match(/^\d{18}$/);
 
@@ -20,6 +20,12 @@ export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgumen
         if (hasUserId) {
             userId = (text.match(/\d{18}/) as RegExpMatchArray).pop();
         }
+
+        return userId;
+    }
+
+    protected parseArgument(text: string): ParsebrdDiscordArgument {
+        const userId = this.extractUserId(text);
 
         const argument = {
             text: text,
