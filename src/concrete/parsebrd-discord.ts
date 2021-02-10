@@ -1,4 +1,4 @@
-import { Channel, GuildMember, User } from "discord.js";
+import { Channel, Client, GuildMember, User } from "discord.js";
 import ParsebrdCore from "../parsebrd-core";
 
 interface ParsebrdDiscordArgument {
@@ -10,6 +10,14 @@ interface ParsebrdDiscordArgument {
 }
 
 export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgument> {
+    private readonly client: Client;
+
+    constructor(text: string, client: Client) {
+        super(text);
+
+        this.client = client;
+    }
+
     private extractUserId(text: string): string | undefined {
         const pingMatch = text.match(/<@!?\d{18}?>/);
         const pureIdMatch = text.match(/^\d{18}$/);
