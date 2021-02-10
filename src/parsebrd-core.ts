@@ -86,7 +86,7 @@ export default abstract class ParsebrdCore<ArgumentType> {
     }
 
     private stringArrayToArguments(elements: string[]): ArgumentType[] {
-        return elements.map(this.parseArgument);
+        return elements.map(this.parseArgument.bind(this));
     }
 
     private textToArguments(text: string): ArgumentType[] {
