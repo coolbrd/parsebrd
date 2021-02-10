@@ -42,4 +42,21 @@ export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgumen
 
         return argument;
     }
+
+    private async fetchUser(userId: string): Promise<User | undefined> {
+        let user: User | undefined;
+        try {
+            user = await this.client.users.fetch(userId);
+        }
+        catch {
+            user = undefined;
+        }
+        return user;
+    }
+
+    protected async loadArgument(argument: ParsebrdDiscordArgument): Promise<void> {
+        if (argument.userId) {
+            argument.user = await this.fetchUser(argument.userId);
+        }
+    }
 }
