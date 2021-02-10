@@ -1,4 +1,5 @@
 import { stripIndent } from "common-tags";
+import { inspect } from "util";
 
 export default abstract class ParsebrdCore<ArgumentType> {
     public readonly originalText: string;
@@ -40,6 +41,39 @@ export default abstract class ParsebrdCore<ArgumentType> {
         const nextArgument = this.currentArguments.shift() as ArgumentType;
 
         return nextArgument;
+    }
+
+    public async load(): Promise<void> {
+        const loadPromises: Promise<void>[] = [];
+
+        this.originalArguments.forEach(argument => {
+            const loadPromise = this.loadArgument(argument).catch(error => {
+                throw new Error(stripIndent`
+                    There was an error asynchronously loading a Parsebrd argument.
+
+                    Argument: ${inspect(argument)}
+
+                    ${error}
+                `);
+            });
+
+            loadPromises.push(loadPromise);
+        });
+
+        try {
+            await Promise.all(loadPromises);
+        }
+        catch (error) {
+            throw new Error(stripIndent`
+                There was an error loading one or more Parsebrd argument.
+
+                ${error}
+            `);
+        }
+    }
+
+    protected async loadArgument(_argument: ArgumentType): Promise<void> {
+        return;
     }
 
     private removePrefix(text: string, prefix: string): string {
