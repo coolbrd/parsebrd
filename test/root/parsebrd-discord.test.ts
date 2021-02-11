@@ -1,4 +1,4 @@
-import { Client, Message, TextChannel, User, UserManager } from "discord.js";
+import { Client, Message, User, UserManager } from "discord.js";
 import ParsebrdDiscord from "../../src/concrete/parsebrd-discord";
 import { createMockedMessage } from "../mocks/discord-mocks";
 
@@ -9,10 +9,12 @@ describe("ParsebrdDiscord user id identification", () => {
     let mockedMessage: Message;
 
     beforeEach(() => {
-        jest.resetAllMocks();
-
         mockedClient = new Client();
         mockedMessage = createMockedMessage({ client: mockedClient });
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     it("should identify a simple user ping", () => {
