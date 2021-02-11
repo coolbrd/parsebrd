@@ -1,5 +1,7 @@
+import { stripIndent } from "common-tags";
 import { Client, GuildMember, Message, User } from "discord.js";
 import ParsebrdCore from "../parsebrd-core";
+import { inspect } from "util";
 
 interface ParsebrdDiscordArgument {
     text: string,
@@ -56,9 +58,26 @@ export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgumen
         return user;
     }
 
+    private async fetchMember(user: User): Promise<GuildMember | undefined> {
+        if (!this.message.guild) {
+            return undefined;
+        }
+
+        try {
+            return await this.message.guild.members.fetch(user);
+        }
+        catch (error) {
+            return undefined;
+        }
+    }
+
     protected async loadArgument(argument: ParsebrdDiscordArgument): Promise<void> {
         if (argument.userId) {
             argument.user = await this.fetchUser(argument.userId);
+        }
+
+        if (argument.user) {
+            argument.member = await this.fetchMember(argument.user);
         }
     }
 }

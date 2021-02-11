@@ -1,4 +1,4 @@
-import { Client, Message, User, UserManager } from "discord.js";
+import { Client, Guild, GuildMember, GuildMemberManager, Message, User, UserManager } from "discord.js";
 import ParsebrdDiscord from "../../src/concrete/parsebrd-discord";
 import { createMockedMessage } from "../mocks/discord-mocks";
 
@@ -113,5 +113,61 @@ describe("ParsebrdDiscord user loading", () => {
         const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         await parsebrd.load();
         expect(mockedUserManagerFetch).not.toBeCalled();
+    });
+});
+
+describe("ParsebrdDiscord member loading", () => {
+    let mockedClient: Client;
+    let mockedMessage: Message;
+    let mockedUserManager: UserManager;
+    let mockedUserManagerFetch: jest.SpyInstance;
+    let mockedGuild: Guild;
+    let mockedMemberManager: GuildMemberManager;
+    let mockedMemberManagerFetch: jest.SpyInstance;
+
+    beforeEach(() => {
+        mockedClient = new Client();
+        mockedMessage = createMockedMessage({ client: mockedClient });
+        mockedUserManager = new UserManager(mockedClient);
+        mockedUserManagerFetch = jest.spyOn(mockedUserManager, "fetch");
+        mockedGuild = new Guild(mockedClient, {});
+        mockedMemberManager = new GuildMemberManager(mockedGuild);
+        mockedMemberManagerFetch = jest.spyOn(mockedMemberManager, "fetch");
+
+        mockedClient.users = mockedUserManager;
+
+        mockedGuild.members = mockedMemberManager;
+        (mockedMessage as any).guild = mockedGuild;
+        
+        mockedUserManagerFetch.mockResolvedValue(new User(mockedClient, {}));
+        mockedMemberManagerFetch.mockResolvedValue(new GuildMember(mockedClient, {}, mockedGuild));
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it("should attempt to fetch an argument's member if it has a user", async () => {
+        mockedMessage.content = "010101010101010101 notAnId 123456789123456789";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
+
+        await parsebrd.load();
+
+        expect(parsebrd.nextArgument().member).toBeDefined();
+        expect(parsebrd.nextArgument().member).toBeUndefined();
+        expect(parsebrd.nextArgument().member).toBeDefined();
+    });
+
+    it("should not assign a member if the fetch fails", async () => {
+        mockedMemberManagerFetch.mockImplementationOnce(async () => { throw new Error("Test error") });
+
+        mockedMessage.content = "010101010101010101 notAnId 123456789123456789";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
+
+        await parsebrd.load();
+
+        expect(parsebrd.nextArgument().member).toBeUndefined();
+        expect(parsebrd.nextArgument().member).toBeUndefined();
+        expect(parsebrd.nextArgument().member).toBeDefined();
     });
 });
