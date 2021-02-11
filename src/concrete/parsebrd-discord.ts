@@ -1,7 +1,5 @@
-import { stripIndent } from "common-tags";
 import { Client, GuildMember, Message, User } from "discord.js";
 import ParsebrdCore from "../parsebrd-core";
-import { inspect } from "util";
 
 interface ParsebrdDiscordArgument {
     text: string,
