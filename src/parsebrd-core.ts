@@ -1,9 +1,14 @@
 import { stripIndent } from "common-tags";
 import { inspect } from "util";
 
-export default abstract class ParsebrdCore<ArgumentType> {
+export interface ParsebrdCoreArgument {
+    text: string
+}
+
+export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgument> {
     public readonly originalText: string;
     public readonly originalArguments: ArgumentType[];
+    public readonly prefix?: string;
 
     private readonly currentArguments: ArgumentType[];
 
@@ -15,6 +20,7 @@ export default abstract class ParsebrdCore<ArgumentType> {
         this.originalText = text;
 
         if (options && options.prefix) {
+            this.prefix = options.prefix;
             text = this.removePrefix(text, options.prefix);
         }
 
@@ -33,6 +39,18 @@ export default abstract class ParsebrdCore<ArgumentType> {
         else {
             return false;
         }
+    }
+
+    public get restOfText(): string {
+        let rest = "";
+
+        this.currentArguments.forEach(argument => {
+            rest += argument.text + " ";
+        });
+
+        rest = rest.trim();
+
+        return rest;
     }
 
     public nextArgument(): ArgumentType {

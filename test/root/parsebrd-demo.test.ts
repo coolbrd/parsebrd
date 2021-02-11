@@ -57,6 +57,14 @@ describe("ParsebrdSimple text parsing", () => {
 });
 
 describe("ParsebrdSimple prefix treatment", () => {
+    it("should save a prefix if one is given", () => {
+        let parsebrd = new ParsebrdDemo("a!some command", { prefix: "a!" });
+        expect(parsebrd.prefix).toBe("a!");
+
+        parsebrd = new ParsebrdDemo("no prefix");
+        expect(parsebrd.prefix).toBeUndefined();
+    });
+
     it("should properly remove prefixes", () => {
         let parsebrd = new ParsebrdDemo("b/hello, beasiary command!", { prefix: "b/" });
         expect(parsebrd.originalArguments[0].text.startsWith("b/")).toBe(false);
@@ -82,7 +90,32 @@ describe("ParsebrdSimple iteration behavior", () => {
         expect(parsebrd.nextArgument().text).toBe("arguments");
 
         expect(parsebrd.hasNextArgument).toBe(false);
+    });
+
+    it("should throw an error when iterated after no arguments are left", () => {
+        const parsebrd = new ParsebrdDemo("one two three");
+        
+        parsebrd.nextArgument();
+        parsebrd.nextArgument();
+        parsebrd.nextArgument();
+
         expect(() => parsebrd.nextArgument()).toThrow();
+    });
+
+    it("should update restOfText accordingly", () => {
+        const parsebrd = new ParsebrdDemo("some arguments with spaces");
+
+        expect(parsebrd.restOfText).toBe("some arguments with spaces");
+
+        parsebrd.nextArgument();
+        expect(parsebrd.restOfText).toBe("arguments with spaces");
+
+        parsebrd.nextArgument();
+        parsebrd.nextArgument();
+        expect(parsebrd.restOfText).toBe("spaces");
+
+        parsebrd.nextArgument();
+        expect(parsebrd.restOfText).toBe("");
     });
 });
 
