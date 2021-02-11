@@ -8,6 +8,8 @@ export function createMockedMessage(options?: { client?: Client, data?: any, cha
     const mockedChannel = options && options.channel ? options.channel : new TextChannel(new Guild(mockedClient, {}));
 
     const mockedMessage = new Message(mockedClient, {}, mockedChannel);
+    (mockedMessage as any).client = mockedClient;
+    mockedMessage.channel = mockedChannel;
 
     return mockedMessage;
 }
