@@ -1,4 +1,4 @@
-import { Client, GuildMember, Message, User } from "discord.js";
+import { Client, Guild, GuildMember, Message, User } from "discord.js";
 import ParsebrdCore from "../parsebrd-core";
 
 interface ParsebrdDiscordArgument {
@@ -12,12 +12,16 @@ export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgumen
     private readonly client: Client;
 
     public readonly message: Message;
+    public readonly prefix?: string;
 
     constructor(message: Message, client: Client, options?: { prefix?: string }) {
         super(message.content, options);
 
         this.client = client;
         this.message = message;
+        if (options) {
+            this.prefix = options.prefix;
+        }
     }
 
     private extractUserId(text: string): string | undefined {
