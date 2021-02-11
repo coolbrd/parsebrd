@@ -9,6 +9,8 @@ export default abstract class ParsebrdCore<ArgumentType> {
 
     protected abstract parseArgument(text: string): ArgumentType;
 
+    protected abstract loadArgument(argument: ArgumentType): Promise<void>;
+
     constructor(text: string, options?: { prefix?: string }) {
         this.originalText = text;
 
@@ -71,8 +73,6 @@ export default abstract class ParsebrdCore<ArgumentType> {
             `);
         }
     }
-
-    protected async loadArgument(_argument: ArgumentType): Promise<void> {}
 
     private removePrefix(text: string, prefix: string): string {
         if (!text.startsWith(prefix)) {
