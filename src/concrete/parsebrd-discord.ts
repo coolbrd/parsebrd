@@ -1,4 +1,4 @@
-import { Client, Guild, GuildMember, Message, User } from "discord.js";
+import { Client, GuildMember, Message, User } from "discord.js";
 import ParsebrdCore from "../parsebrd-core";
 
 interface ParsebrdDiscordArgument {
