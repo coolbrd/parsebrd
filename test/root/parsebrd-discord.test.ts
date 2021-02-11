@@ -1,57 +1,70 @@
-import { Client, User, UserManager } from "discord.js";
+import { Client, Message, TextChannel, User, UserManager } from "discord.js";
 import ParsebrdDiscord from "../../src/concrete/parsebrd-discord";
+import { createMockedMessage } from "../mocks/discord-mocks";
 
 jest.mock("discord.js");
 
 describe("ParsebrdDiscord user id identification", () => {
     let mockedClient: Client;
+    let mockedMessage: Message;
 
     beforeEach(() => {
         jest.resetAllMocks();
 
         mockedClient = new Client();
+        mockedMessage = createMockedMessage({ client: mockedClient });
     });
 
     it("should identify a simple user ping", () => {
-        let parsebrd = new ParsebrdDiscord("<@123456789123456789>", mockedClient);
+        mockedMessage.content = "<@123456789123456789>";
+        let parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBe("123456789123456789");
 
-        parsebrd = new ParsebrdDiscord("<@!101010101010101010>", mockedClient);
+        mockedMessage.content = "<@!101010101010101010>";
+        parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBe("101010101010101010");
     });
 
     it("should not identify ping-like things as pings", () => {
-        let parsebrd = new ParsebrdDiscord("<@1234>", mockedClient);
+        mockedMessage.content = "<@1234>";
+        let parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBeUndefined();
 
-        parsebrd = new ParsebrdDiscord("<@!10101010101010101010>", mockedClient);
+        mockedMessage.content = "<@!10101010101010101010>";
+        parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBeUndefined();
     });
 
     it("should treat plain user id-like numbers as ids", () => {
-        let parsebrd = new ParsebrdDiscord("987654321987654321", mockedClient);
+        mockedMessage.content = "987654321987654321";
+        let parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBe("987654321987654321");
     });
 
     it("should not treat non-id-like things as ids", () => {
-        let parsebrd = new ParsebrdDiscord("123456", mockedClient);
+        mockedMessage.content = "123456";
+        let parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBeUndefined();
 
-        parsebrd = new ParsebrdDiscord("10101010101010101010", mockedClient);
+        mockedMessage.content = "10101010101010101010";
+        parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBeUndefined();
 
-        parsebrd = new ParsebrdDiscord("101010101o10101010", mockedClient);
+        mockedMessage.content = "101010101o10101010";
+        parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.nextArgument().userId).toBeUndefined();
     });
 });
 
 describe("ParsebrdDiscord user loading", () => {
     let mockedClient: Client;
+    let mockedMessage: Message;
     let mockedUserManager: UserManager;
     let mockedUserManagerFetch: jest.SpyInstance;
 
     beforeEach(() => {
         mockedClient = new Client();
+        mockedMessage = createMockedMessage({ client: mockedClient });
         mockedUserManager = new UserManager(mockedClient);
         mockedUserManagerFetch = jest.spyOn(mockedUserManager, "fetch");
 
@@ -65,14 +78,16 @@ describe("ParsebrdDiscord user loading", () => {
     });
 
     it("should attempt to load user ids", async () => {
-        const parsebrd = new ParsebrdDiscord("101010101010101010", mockedClient);
+        mockedMessage.content = "101010101010101010";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(mockedUserManager.fetch).not.toBeCalled();
         await parsebrd.load();
         expect(mockedUserManager.fetch).toBeCalledTimes(1);
     });
 
     it("should load users from ids", async () => {
-        const parsebrd = new ParsebrdDiscord("101010101010101010", mockedClient);
+        mockedMessage.content = "101010101010101010";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         expect(parsebrd.originalArguments[0].user).toBeUndefined();
         await parsebrd.load();
         expect(parsebrd.originalArguments[0].user).toBeDefined();
@@ -81,7 +96,8 @@ describe("ParsebrdDiscord user loading", () => {
     it("should not assign users when fetch fails", async () => {
         mockedUserManagerFetch.mockImplementation(async () => { throw new Error("Test error") });
 
-        const parsebrd = new ParsebrdDiscord("101010101010101010", mockedClient);
+        mockedMessage.content = "101010101010101010";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         const userArgument = parsebrd.originalArguments[0];
         userArgument.user = new User(mockedClient, {});
         await parsebrd.load();
@@ -91,7 +107,8 @@ describe("ParsebrdDiscord user loading", () => {
     });
 
     it("should not attempt to fetch a user from a non-id", async () => {
-        const parsebrd = new ParsebrdDiscord("no ids here", mockedClient);
+        mockedMessage.content = "no ids here";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
         await parsebrd.load();
         expect(mockedUserManagerFetch).not.toBeCalled();
     });

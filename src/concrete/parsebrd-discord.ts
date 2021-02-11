@@ -1,4 +1,4 @@
-import { Channel, Client, GuildMember, User } from "discord.js";
+import { Client, GuildMember, Message, User } from "discord.js";
 import ParsebrdCore from "../parsebrd-core";
 
 interface ParsebrdDiscordArgument {
@@ -6,16 +6,18 @@ interface ParsebrdDiscordArgument {
     userId?: string,
     user?: User,
     member?: GuildMember
-    channel?: Channel
 }
 
 export default class ParsebrdDiscord extends ParsebrdCore<ParsebrdDiscordArgument> {
     private readonly client: Client;
 
-    constructor(text: string, client: Client) {
-        super(text);
+    public readonly message: Message;
+
+    constructor(message: Message, client: Client, options?: { prefix?: string }) {
+        super(message.content, options);
 
         this.client = client;
+        this.message = message;
     }
 
     private extractUserId(text: string): string | undefined {
