@@ -1,8 +1,7 @@
 import { Client, GuildMember, Message, User } from "discord.js";
-import ParsebrdCore from "../parsebrd-core";
+import ParsebrdCore, { ParsebrdCoreArgument } from "../parsebrd-core";
 
-interface ParsebrdDiscordArgument {
-    text: string,
+interface ParsebrdDiscordArgument extends ParsebrdCoreArgument {
     userId?: string,
     user?: User,
     member?: GuildMember
