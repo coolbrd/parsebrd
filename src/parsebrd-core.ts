@@ -36,6 +36,16 @@ export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgu
         return this.argumentsRemaining > 0;
     }
 
+    public nextArgument(): ArgumentType {
+        if (!this.hasNextArgument) {
+            throw new Error("Parsebrd attempted to get the next argument from an array of none.");
+        }
+
+        const nextArgument = this.currentArguments.shift() as ArgumentType;
+
+        return nextArgument;
+    }
+
     public get restOfText(): string {
         let rest = "";
 
@@ -46,16 +56,6 @@ export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgu
         rest = rest.trim();
 
         return rest;
-    }
-
-    public nextArgument(): ArgumentType {
-        if (!this.hasNextArgument) {
-            throw new Error("Parsebrd attempted to get the next argument from an array of none.");
-        }
-
-        const nextArgument = this.currentArguments.shift() as ArgumentType;
-
-        return nextArgument;
     }
 
     public async load(): Promise<void> {
