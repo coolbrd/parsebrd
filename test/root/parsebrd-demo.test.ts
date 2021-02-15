@@ -1,6 +1,6 @@
 import ParsebrdDemo from "../../src/concrete/parsebrd-demo";
 
-describe("ParsebrdSimple text parsing", () => {
+describe("ParsebrdDemo text parsing", () => {
     it("should properly split normal text", () => {
         const parsebrd = new ParsebrdDemo("some command text");
 
@@ -56,7 +56,7 @@ describe("ParsebrdSimple text parsing", () => {
     });
 });
 
-describe("ParsebrdSimple prefix treatment", () => {
+describe("ParsebrdDemo prefix treatment", () => {
     it("should save a prefix if one is given", () => {
         let parsebrd = new ParsebrdDemo("a!some command", { prefix: "a!" });
         expect(parsebrd.prefix).toBe("a!");
@@ -78,7 +78,7 @@ describe("ParsebrdSimple prefix treatment", () => {
     });
 });
 
-describe("ParsebrdSimple iteration behavior", () => {
+describe("ParsebrdDemo iteration behavior", () => {
     it("should properly iterate arguments", () => {
         const parsebrd = new ParsebrdDemo("a few arguments");
 
@@ -119,7 +119,7 @@ describe("ParsebrdSimple iteration behavior", () => {
     });
 });
 
-describe("ParsebrdSimple load behavior", () => {
+describe("ParsebrdDemo load behavior", () => {
     it("should load all arguments", async () => {
         const parsebrd = new ParsebrdDemo("one two three");
 
