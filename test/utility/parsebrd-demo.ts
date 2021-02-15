@@ -1,4 +1,4 @@
-import ParsebrdCore, { ParsebrdCoreArgument } from "../parsebrd-core";
+import ParsebrdCore, { ParsebrdCoreArgument } from "../../src/parsebrd-core";
 
 interface ParsebrdDemoArgument extends ParsebrdCoreArgument {
     loaded: boolean

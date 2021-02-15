@@ -1,4 +1,4 @@
 {
-  "include": ["root/**/*", "mocks/**/*", "../src/**/*"],
+  "include": ["utility/**/*", "../src/**/*"],
   "extends": "../tsconfig.json"
 }

@@ -1,4 +1,4 @@
-import ParsebrdDemo from "../../src/concrete/parsebrd-demo";
+import ParsebrdDemo from "../utility/parsebrd-demo";
 
 describe("ParsebrdDemo text parsing", () => {
     it("should properly split normal text", () => {
