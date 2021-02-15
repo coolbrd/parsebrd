@@ -32,12 +32,12 @@ export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgu
         return this.currentArguments.length;
     }
 
-    public get hasNextArgument(): boolean {
+    public hasNextArgument(): boolean {
         return this.argumentsRemaining > 0;
     }
 
     public nextArgument(): ArgumentType {
-        if (!this.hasNextArgument) {
+        if (!this.hasNextArgument()) {
             throw new Error("Parsebrd attempted to get the next argument from an array of none.");
         }
 

@@ -83,13 +83,13 @@ describe("ParsebrdDemo iteration behavior", () => {
         const parsebrd = new ParsebrdDemo("a few arguments");
 
         expect(parsebrd.argumentsRemaining).toBe(3);
-        expect(parsebrd.hasNextArgument).toBe(true);
+        expect(parsebrd.hasNextArgument()).toBe(true);
 
         expect(parsebrd.nextArgument().text).toBe("a");
         expect(parsebrd.nextArgument().text).toBe("few");
         expect(parsebrd.nextArgument().text).toBe("arguments");
 
-        expect(parsebrd.hasNextArgument).toBe(false);
+        expect(parsebrd.hasNextArgument()).toBe(false);
     });
 
     it("should throw an error when iterated after no arguments are left", () => {
