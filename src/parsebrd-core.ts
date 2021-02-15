@@ -38,7 +38,7 @@ export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgu
 
     public nextArgument(): ArgumentType {
         if (!this.hasNextArgument()) {
-            throw new Error("Parsebrd attempted to get the next argument from an array of none.");
+            throw new Error("No arguments left. Cannot get next.");
         }
 
         const nextArgument = this.currentArguments.shift() as ArgumentType;
