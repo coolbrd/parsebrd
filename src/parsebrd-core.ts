@@ -36,14 +36,6 @@ export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgu
         return this.argumentsRemaining > 0;
     }
 
-    public get currentArgument(): ArgumentType | undefined {
-        if (!this.hasNextArgument) {
-            return undefined;
-        }
-
-        return this.currentArguments[0];
-    }
-
     public get restOfText(): string {
         let rest = "";
 
