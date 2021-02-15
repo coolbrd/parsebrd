@@ -33,12 +33,7 @@ export default abstract class ParsebrdCore<ArgumentType extends ParsebrdCoreArgu
     }
 
     public get hasNextArgument(): boolean {
-        if (this.argumentsRemaining > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return this.argumentsRemaining > 0;
     }
 
     public get restOfText(): string {
