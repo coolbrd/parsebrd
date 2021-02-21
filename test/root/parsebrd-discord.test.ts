@@ -158,6 +158,17 @@ describe("ParsebrdDiscord member loading", () => {
         expect(parsebrd.nextArgument().member).toBeDefined();
     });
 
+    it("should try to fetch a member if the message was not sent in a guild", async () => {
+        (mockedMessage as any).guild = null;
+        mockedMessage.content = "010101010101010101";
+        const parsebrd = new ParsebrdDiscord(mockedMessage, mockedClient);
+
+        await parsebrd.load();
+
+        expect(parsebrd.nextArgument().member).toBeUndefined();
+        expect(mockedMemberManagerFetch).not.toBeCalled();
+    });
+
     it("should not assign a member if the fetch fails", async () => {
         mockedMemberManagerFetch.mockImplementationOnce(async () => { throw new Error("Test error") });
 
