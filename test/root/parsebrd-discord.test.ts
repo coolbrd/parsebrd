@@ -1,6 +1,6 @@
+import { createMockedMessage } from "coolbrds-discord-mocks/src/discord-mocks";
 import { Client, Guild, GuildMember, GuildMemberManager, Message, User, UserManager } from "discord.js";
 import ParsebrdDiscord from "../../src/concrete/parsebrd-discord";
-import { createMockedMessage } from "../utility/mocks/discord-mocks";
 
 jest.mock("discord.js");
 

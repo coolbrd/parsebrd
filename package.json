@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/common-tags": "^1.8.0",
     "common-tags": "^1.8.0",
+    "coolbrds-discord-mocks": "git+https://github.com/coolbrd/coolbrds-discord-mocks.git",
     "discord.js": "^12.5.1"
   },
   "devDependencies": {
